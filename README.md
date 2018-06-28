@@ -91,4 +91,93 @@ Run the following commands to update existing and installed packages
       * `cd catalog`
 3.    Then clone the project from github repository :
       * `sudo git clone https://github.com/ahmedheema95/ItemCatalog.git clone`
-####      
+      
+#### Setup for deploying a Flask Application on Ubuntu:      
+1.    Rename 'application.py' in /var/www/catalog/catalog :
+      * `cd /var/www/catalog/catalog`
+      * `sudo mv application.py  __init__.py`
+2.    Create a 'catalog.wsgi' file in /var/www/catalog :
+      * `cd /var/www/catalog`
+      * `sudo nano catalog.wsgi`
+3.    Insert the following text inside 'catalog.wsgi' :
+      ```
+       import sys
+       import logging
+       logging.basicConfig(stream=sys.stderr)
+       sys.path.insert(0, "/var/www/catalog/")
+       from catalog import app as application
+       application.secret_key = 'super_secret_key'
+4.    Install virtual environment :
+      * `sudo pip install virtualenv`
+      * Create a new virtual environment :
+      * `sudo virtualenv venv`
+      * Activate the virutal environment 
+      * `source venv/bin/activate`
+      * `sudo chmod -R 777 venv`
+5.    Install Flask and other dependencies :
+      * Install pip :
+      * `sudo apt-get install python-pip`
+      * Install Flask :
+      * `pip install Flask`
+      * Install other project dependencies :
+      * `sudo pip install httplib2 oauth2client sqlalchemy psycopg2 sqlalchemy_utils`
+6.    Enable a new virtual host :
+      * sudo nano /etc/apache2/sites-available/catalog.conf
+      * Insert the following text inside 'catalog.conf' :
+      ```
+        <VirtualHost *:80>
+      ServerName public-ip-address
+      ServerAdmin admin@public-ip-address
+      ServerAlias hostname
+      WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/catalog/venv/lib/python2.7/site-packages
+      WSGIProcessGroup catalog      
+      WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+      <Directory /var/www/catalog/catalog/>
+          Order allow,deny
+          Allow from all
+      </Directory>
+      Alias /static /var/www/catalog/catalog/static
+      <Directory /var/www/catalog/catalog/static/>
+          Order allow,deny
+          Allow from all
+      </Directory>
+      ErrorLog ${APACHE_LOG_DIR}/error.log
+      LogLevel warn
+      CustomLog ${APACHE_LOG_DIR}/access.log combined
+        </VirtualHost>
+      ```
+      * Enable the virtual host `sudo a2ensite catalog`
+7.    Install and configure PostgreSQL      
+      * `sudo apt-get install libpq-dev python-dev`
+      * `sudo apt-get install postgresql postgresql-contrib`
+      * `sudo su - postgres`
+      * `psql`
+      * `CREATE USER catalog WITH PASSWORD 'password';`
+      * `ALTER USER catalog CREATEDB;`
+      * `CREATE DATABASE catalog WITH OWNER catalog;`
+      * `\c catalog`
+      * `REVOKE ALL ON SCHEMA public FROM public;`
+      * `GRANT ALL ON SCHEMA public TO catalog;`
+      * `\q`
+      * `exit`
+      * Change create engine line in your __init__.py and database_setup.py to: engine =                  create_engine('postgresql://catalog:password@localhost/catalog')
+      * Then run the database setup python file 
+      * `python /var/www/catalog/catalog/app_db.py`
+8.    Restart Apache
+      * `sudo service apache2 restart`
+9.    Then you can visit the app at http://ec2-54-213-197-180.us-west-2.compute.amazonaws.com/    
+#### Get Google OAuth-Logins Working:      
+ * Go to the project on the Developer Console: https://console.developers.google.com/project
+ * Navigate to APIs & auth > Credentials > Edit Settings
+ * Add your host name and public IP-address to your Authorized JavaScript origins and your host name + oauth2callback to  Authorized redirect URIs, e.g. http://ec2-54-213-197-180.us-west-2.compute.amazonaws.com/oauth2callback
+ * You need also to update the client_secrets.json file and update its path in the __init__.py to /var/www/catalog/catalog/client_secrets.json
+ #### Common Problems :
+ * I encountered some problems as 'internal server error' message which appeared when i try to run my app for the first time.
+ * One of the solutions is to debug the errors by checking the error log and try to solve the errors appeared :
+ * `sudo nano /var/log/apache2/error.log`
+ ### Resources :
+ * https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
+ * https://askubuntu.com/
+ * [rrjoson Readme](https://github.com/rrjoson/udacity-linux-server-configuration/)
+ * [stueken Readme](https://github.com/stueken/FSND-P5_Linux-Server-Configuration/)
+ * [blurdylan Readme](https://github.com/blurdylan/linux-server-configuration/)
