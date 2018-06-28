@@ -13,8 +13,8 @@
     * Download the instance's private key by navigating to the Amazon Lightsail 'Account page'.
     * A file with extension .pem will be downloaded; open it.
     * Copy the text and put it in a file called light_key.rsa (or any other name to help you could recall anytime) in the local machine ~/.ssh/ directory
-    * Run chmod 600 ~/.ssh/lightrail_key.rsa to give permissions to access the file
-    * Run ssh -i ~/.ssh/light_key.rsa ubuntu@public-ip-address, to login to the VM
+    * Run chmod 600 ~/.ssh/light_key.rsa to give permissions to access the file.
+    * Run ssh -i ~/.ssh/light_key.rsa ubuntu@public-ip-address, to login to the VM.
 
 ### Update Ubuntu Packages :
 Run the following commands to update existing and installed packages
