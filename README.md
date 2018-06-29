@@ -46,7 +46,7 @@ Run the following commands to update existing and installed packages
       * `sudo ufw status`
 12.   Then we need to update the firewall configuration on the lightsail AWS instance and change the same ports as configured above
 13.   You can now login through new terminal window :
-      * `ssh -i ~/.ssh/lightrail_key.rsa -p 2200 ubuntu@public-ip-address`
+      * `ssh -i ~/.ssh/light_key.rsa -p 2200 ubuntu@public-ip-address`
 
 ### Create grader User :
 1.    Add user :
