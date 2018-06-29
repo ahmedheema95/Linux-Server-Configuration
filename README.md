@@ -65,7 +65,7 @@ Run the following commands to update existing and installed packages
 9.    Then copy the content of the key generated on the local machine to the autorized_keys file on the VM
 10.   Run `chmod 700 .ssh` on the VM
 11.   Run `chmod 644 .ssh/authorized_keys` on the VM
-12.   Run `chown -R grader:your_user .grader `on the VM
+12.   Run `chown -R grader:grader .ssh `on the VM
 13.   Make sure key-based authentication is forced (log in as grader, open the /etc/ssh/sshd_config file, by running `sudo nano /etc/ssh/sshd_config file` and find the line that says, '# Change to no to disable tunnelled clear text passwords'; if the next line says, 'PasswordAuthentication yes', change the 'yes' to 'no'; save and exit the file; `run sudo service ssh restart`
 14.   Then login to the VM machine through your local machine :
       * `ssh -i ~/.ssh/grader_key -p 2200 grader@public-ip-address`
